@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.semesterplanner.APIService
 import com.example.semesterplanner.CourseData
 import com.example.semesterplanner.R
 import com.example.semesterplanner.RecyclerViewAdapter
@@ -18,6 +19,7 @@ class SearchFragment : Fragment() {
 
     private lateinit var searchViewModel: SearchViewModel
 
+    private var APIService: APIService = APIService();
 
 
     override fun onCreateView(
@@ -32,9 +34,15 @@ class SearchFragment : Fragment() {
         searchViewModel.text.observe(viewLifecycleOwner, Observer {
           //  textView.text = it
 
-            //TODO: not sure if this code needs to be here or in MainActivity
+
             //MyCode:
-            val courseList = generateDummyList(500)
+
+            //MyCode:
+            APIService.init()
+
+
+            val courseList = APIService().generateDummyList(500) //TODO: implement API fetch method
+
             recycler_view.adapter = RecyclerViewAdapter(courseList)
             recycler_view.layoutManager = LinearLayoutManager(this.context)
             recycler_view.setHasFixedSize(true)
@@ -42,22 +50,13 @@ class SearchFragment : Fragment() {
 
         })
 
-
-
         return root
     }
 
 
-    //TODO: may delete this function again
-    //This function is only used during development process until API data is available
-    private fun generateDummyList(size: Int): ArrayList<CourseData> {
-        val courseList = ArrayList<CourseData>()
 
-        for (i in 0 until size) {
-            val course = CourseData("VO App Development", "Tuesday 10:00 - 12:00", "Schöffmann K.", "623.950")
-            courseList += course
-        }
-        return courseList
-    }
+
+
+
 
 }
