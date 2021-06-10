@@ -36,25 +36,28 @@ class SearchFragment : Fragment() {
 
 
             //MyCode:
-
-            //MyCode:
             APIService.init()
 
-
-            val courseList = APIService().generateDummyList(500) //TODO: implement API fetch method
-
-            recycler_view.adapter = RecyclerViewAdapter(courseList)
-            recycler_view.layoutManager = LinearLayoutManager(this.context)
-            recycler_view.setHasFixedSize(true)
+            fillRecyclerView()
 
 
+            //TODO:
+            // since fillRecyclerView needs the data from the API and this data is fetched
+            // asynchronously, we need wait with executing fillRecyclerView() until
+            // APIService.init() is done.
         })
 
         return root
     }
 
 
+    fun fillRecyclerView(){
+        val courseList = APIService.getCourseList()
 
+        recycler_view.adapter = RecyclerViewAdapter(courseList)
+        recycler_view.layoutManager = LinearLayoutManager(this.context)
+        recycler_view.setHasFixedSize(true)
+    }
 
 
 
