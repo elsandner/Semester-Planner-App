@@ -17,10 +17,10 @@ class APIService {
     private val courseList = ArrayList<CourseData>()
 
     fun init(){
-        GlobalScope.launch { //Run in new Thread
+        //GlobalScope.launch { //Run in new Thread
             val apiData = fetchDataFromAPI()
             fetchCourseDataFromJSON(apiData)
-        }
+        //}
     }
 
 
