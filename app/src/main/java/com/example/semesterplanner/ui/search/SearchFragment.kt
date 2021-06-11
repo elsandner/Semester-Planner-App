@@ -3,15 +3,13 @@ package com.example.semesterplanner.ui.search
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.semesterplanner.APIService
-import com.example.semesterplanner.MainActivity
 import com.example.semesterplanner.R
 import com.example.semesterplanner.RecyclerViewAdapter
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -22,7 +20,8 @@ class SearchFragment : Fragment() {
 
     private lateinit var searchViewModel: SearchViewModel
 
-    private var APIService: APIService = APIService();
+    private var apiService: APIService = APIService();
+    private lateinit var recyclerViewAdapter: RecyclerViewAdapter
 
 
     override fun onCreateView(
@@ -38,6 +37,7 @@ class SearchFragment : Fragment() {
             //  textView.text = it
 
 
+
             fillRecyclerView()
 
         })
@@ -50,20 +50,29 @@ class SearchFragment : Fragment() {
         val context = this.context
         GlobalScope.launch { //Run in new Thread
 
-            APIService.init()
-            val courseList = APIService.getCourseList()
+            apiService.init()
+            val courseList = apiService.getCourseList()
+
 
             //Run in main thread again
             Handler(Looper.getMainLooper()).post {
-                recycler_view.adapter = RecyclerViewAdapter(courseList)
+                recyclerViewAdapter = RecyclerViewAdapter(courseList)
+                recycler_view.adapter = recyclerViewAdapter
                 recycler_view.layoutManager = LinearLayoutManager(context)
                 recycler_view.setHasFixedSize(true)
-            }
 
+
+                searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
+
+                    override fun onQueryTextSubmit(query: String): Boolean {
+                        return false
+                    }
+                    override fun onQueryTextChange(newText: String): Boolean {
+                        recyclerViewAdapter.filter.filter(newText)
+                        return false
+                    }
+                })
+            }
         }
     }
-
-
-
-
 }
